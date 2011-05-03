@@ -1,0 +1,308 @@
+<!doctype html> 
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:og="http://ogp.me/ns#"
+      xmlns:fb="http://www.facebook.com/2008/fbml">
+<head> 
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<meta property="og:title" content="cavad"/>
+<meta property="og:image" content="http://fb.kurimon.com/cavad/images/cavad_facebooklogo.png"/>
+<meta property="og:site_name" content="cavad"/>
+<meta property="fb:admins" content="kurichang"/>
+<meta property="og:description"
+          content="「node.js」を使ったSNS連携リアルタイムチャット"/>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
+<script type="text/javascript" src="http://cdn.socket.io/stable/socket.io.js"></script>
+<title>cavad</title>
+<style type="text/css">
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, font, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-weight: inherit;
+  font-style: inherit;
+  font-size: 100%;
+  font-family: inherit;
+  border-color: inherit;
+  vertical-align: middle;
+}
+
+body {
+  background: white;
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  Margin: 0 0 0 0;
+  padding: 0 0 0 0;
+  -webkit-text-size-adjust: none;
+  margin: 0px;
+}
+
+div {
+  display: block;
+}
+
+.contentwrap {
+  width: 860px;
+  margin: 0 auto 0 auto;
+  position: relative;
+}
+
+.profileimg {
+  width: 25px;
+  height: 25px;
+}
+
+.white {
+  color: white;
+}
+
+.boxtitle {
+  padding: 8px 30px 8px 30px;
+  margin: 20px auto 0 auto;
+  font-size: 16px;
+  font-weight: bold;
+  text-align: center;
+  -moz-border-radius: 10px 10px 0 0;
+  -webkit-border-radius: 10px 10px 0 0;
+  background: #FFC901;
+  color: white;
+  border: 1px solid #FEB905;
+}
+
+#topline {
+  background: #B5EFFF;
+  height: 0px;
+}
+
+#banner {
+  background: #FCA20C;
+  height: 50px;
+  position: relative;
+}
+
+#debug {
+  background-color: #EEC900;
+}
+
+#serverstatus {
+  float: right;
+  font-size: 12px;
+  background-color: white;
+  padding: 6px 6px 6px 6px;
+  -moz-border-radius: 2px 2px 2px 2px;
+  -webkit-border-radius: 2px 2px 2px 2px;
+}
+
+#inputmessage {
+  width: 300px;
+}
+
+#leftcolumn {
+  position: relative;
+  margin: 0 auto;
+  padding: 0px;
+  text-align: left;
+  vertical-align: middle;
+  background: white;
+  width: 610px;
+  height: 100%;
+  float: left;
+}
+
+#rightcolumn {
+  text-align: left;
+  position: relative;
+  padding: 0px;
+  float: right;
+  background: white;
+  width: 240px;
+  height: 100%;
+  margin-left: 10px;
+}
+
+#chatbox {
+  padding: 5px;
+  margin-bottom: 30px;
+  background: #EBEBEB;
+  -moz-border-radius: 0 0 10px 10px;
+  -webkit-border-radius: 0 0 10px 10px;
+}
+
+#form {
+  background-color: #EBEBEB;
+  margin: 0px;
+  width: 100%;
+  overflow: hidden;
+}
+
+#textwrapper {
+  margin-top: 5px;
+  margin-right: 10px;
+  margin-left: 10px;
+  padding-right: 10px;
+}
+
+#pushtext {
+  width: 100%;
+  height: 15px;
+  font-size: 14px;
+}
+
+#buttonwrapper {
+  //float: left;
+  padding-top: 5px;
+  padding-left: 8px;
+  padding-bottom: 5px;
+}
+
+#pushbutton {
+  background-color: white;
+  border: 1px solid #AAA;
+  color: #333;
+  font-size: 16px;
+  -moz-border-radius: 5px 5px 5px 5px;
+  -webkit-border-radius: 5px 5px 5px 5px;
+}
+
+#updates {
+  background-color: white;
+  min-height: 300px;
+  width: 100%;
+  overflow: hidden;
+}
+
+#peoplebox {
+  padding: 5px;
+  margin-bottom: 30px;
+  background: #EBEBEB;
+  -moz-border-radius: 0 0 10px 10px;
+  -webkit-border-radius: 0 0 10px 10px;
+}
+</style>
+<script type="text/javascript" src="http://connect.facebook.net/ja_JP/all.js"></script>
+<script type="text/javascript" src="js/jquery-1.5.2.min.js"></script>
+<script type="text/javascript"><!--
+
+var socket = new io.Socket(null, {port: 8080});
+socket.connect();
+
+//ページロード完了後の処理
+$(function(){
+
+    //サーバ接続
+    socket.on('connect', function(message){
+      $("#serverstatus").css('background','#A2CD5A').html('<span>Server Connected.</span>');
+    });
+
+    //サーバ切断
+    socket.on('disconnect', function(message){
+      $("#serverstatus").css('background','#FF6A6A').html('<span>Server Disconnected.</span>');
+    });
+
+  //facebookへのログイン&認証&セッション情報の取得
+  fblogin();
+});
+
+
+//facebookへのログイン&認証&セッション情報の取得
+function fblogin() {
+  FB.getLoginStatus(function(response) {  //ログインステータスの取得
+    if (response.session) {  //セッションが取れた時
+
+    //データ受信ハンドラ
+    socket.on('message', function(message){
+      sendmessage = message.split(",")
+      $("#updates").prepend(sendmessage[0] + " " + sendmessage[1] + " " + sendmessage[2] + '<br>');
+    });
+  
+    //ユーザIDの取得
+	FB.api ('/me', function(response) {
+      socket.send(response.id + "," + response.name + "," + "が入室しました。");
+    });
+      
+    } else {
+      //セッションが取れない時は認証画面に飛ばす
+      parent.location.href = "https://www.facebook.com/dialog/oauth?client_id=150894444976816&redirect_uri=http://fb.kurimon.com/cavad/&scope=user_about_me,read_stream,publish_stream";
+    }  //-End- ログインステータスの取得
+  });
+}  //-End- facebookへのログイン&認証&セッション情報の取得//-->
+
+function textboxenter(code){
+  //エンターキー押下なら
+  if(13 == code){
+    pushmessage();
+  }
+}
+
+function pushmessage() {
+
+  if($('#pushtext').val() == ""){
+  
+  }else{
+  pushtext = $('#pushtext').val();
+  $('#pushtext').val("");
+    //サーバーにメッセージをpush
+    FB.api ('/me', function(response) {
+      socket.send(response.id + "," + response.name + "," + pushtext);
+      
+    });
+  }
+}
+
+</script>
+</head>
+<body>
+<div id="fb-root"></div>
+<script>
+  FB.init({  //Javascript SDKの初期化
+     appId  : '150894444976816',
+     status : true, // check login status
+     cookie : true, // enable cookies to allow the server to access the session
+     xfbml  : true  // parse XFBML
+  });
+</script>
+<div id="topline"></div>
+<div id="banner"> 
+  <div class="contentwrap"> 
+    <a href="./"><img height="50" src="./images/cavad.png" id="bannerlogo"></a> 
+  </div>
+</div><!-- end bunner-->
+
+<div id="debug">
+  <div class="contentwrap">
+  </div>
+</div><!-- end debug-->
+
+<div id="maincontents">
+  <div class="contentwrap">
+    <div id="leftcolumn">
+      <div class="boxtitle"><img height="32" src="./images/ch.png" id="chname"><span>Public CH.</span></div>
+      <div id="chatbox">
+        <div id="form">
+          <div id="textwrapper">
+            <input id="pushtext" name="text" onkeypress="textboxenter(event.keyCode);" style="resize: none;"></input>
+          </div>
+          <div id="buttonwrapper">
+            <input type="button" id="pushbutton" value="push" onclick="pushmessage();">
+            <div id ="serverstatus">Loading..</div>
+          </div>
+        </div><!-- end form-->
+        <div id="updates">
+          
+        </div><!-- end updates-->
+      </div><!-- end chatbox-->
+    </div><!-- end leftcolmun-->
+    <div id="rightcolumn">
+      <div class="boxtitle"><img height="32" src="./images/peoples.png" id="peoples"><span>peoples</span></div>    
+      <div id="peoplebox">
+        <div id="updates">
+          
+        </div><!-- end updates-->
+      </div><!-- end chatbox-->
+    </div><!-- end rightcolumn-->
+  </div><!-- end contentwrap-->
+</div><!-- end maincontents-->
+
+
+</body>
+</html>
