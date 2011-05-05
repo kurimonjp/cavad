@@ -20,16 +20,15 @@ socket.on('connection', function(client){
     if(message){
 
       //XSS対策
-      message = message.replace("<", "&lt;");
-      message = message.replace(">", "&gt;");
-      sendmessage = message.split(";")
+      message = message.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+      sendmessage = message.split(";");
       
       //受信データの種類によって処理を振り分ける
       switch (sendmessage[0]){
         //クライアントからの接続要求
         case 'connection':
           //認証(渡されたアクセストークンでユーザ名を取得できるかどうか)
-          xhr.open('GET', 'https://graph.facebook.com/me?access_token=' + sendmessage[1]);          
+          xhr.open('GET', 'https://graph.facebook.com/me?access_token=' + sendmessage[1]);
           xhr.send();
           break;
         case 'sendmessage':
@@ -69,7 +68,7 @@ socket.on('connection', function(client){
     sys.puts('userdisconnect;' + client.sessionId + ';' + username_and_sessionid[client.sessionId] + '; <strong>が切断しました。</strong>;' + getCurrentTime());
     delete username_and_sessionid[client.sessionId];
     sendUserlist();
-  })
+  });
 
   //接続中のユーザ一覧をクライアントに送信
   function sendUserlist(){
