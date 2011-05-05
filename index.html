@@ -56,6 +56,76 @@ div {
   color: white;
 }
 
+.update {
+  border-top: 1px solid #CCC;
+  padding: 10px 0px 10px 0px;
+  overflow: hidden;
+  background-color: white;
+  position: relative;
+  min-height: 40px;
+}
+
+.upic {
+  padding-left: 3px;
+  padding-right: 3px;
+  vertical-align: middle;
+  display: table-cell;
+  float: left;
+}
+
+.userimg {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  width: 40px;
+  height: 40px;
+  -moz-border-radius: 5px 5px 5px 5px;
+  -webkit-border-radius: 5px 5px 5px 5px;
+}
+
+.ucontent {
+  text-align: left;
+  padding-left: 60px;
+}
+
+.utitle {
+  height: 20px;
+  clear: right;
+}
+
+.uname, .mname {
+  width: 125px;
+  text-align: left;
+  font-size: 14px;
+  font-weight: bold;
+  color: black;
+  float: left;
+}
+
+.uinfo {
+  padding-right: 5px;
+  text-align: right;
+  font-size: 14px;
+  color: #666;
+  float: right;
+  clear: right;
+}
+
+.utime {
+  vertical-align: top;
+  font-size: 12px;
+}
+
+.ustatus {
+  text-align: left;
+  font-size: 14px;
+  color: black;
+}
+
+.utext {
+  white-space: pre-wrap;
+}
+
 .boxtitle {
   padding: 8px 30px 8px 30px;
   margin: 20px auto 0 auto;
@@ -109,17 +179,6 @@ div {
   float: left;
 }
 
-#rightcolumn {
-  text-align: left;
-  position: relative;
-  padding: 0px;
-  float: right;
-  background: white;
-  width: 240px;
-  height: 100%;
-  margin-left: 10px;
-}
-
 #chatbox {
   padding: 5px;
   margin-bottom: 30px;
@@ -130,20 +189,19 @@ div {
 
 #form {
   background-color: #EBEBEB;
-  margin: 0px;
   width: 100%;
   overflow: hidden;
 }
 
 #textwrapper {
-  margin-top: 5px;
-  margin-right: 10px;
-  margin-left: 10px;
-  padding-right: 10px;
+  padding-top: 5px;
+  padding-left: 8px;
+  padding-right: 8px;
+  padding-bottom: 5px;
 }
 
 #pushtext {
-  width: 100%;
+  width: 580px;
   height: 15px;
   font-size: 14px;
 }
@@ -151,7 +209,8 @@ div {
 #buttonwrapper {
   //float: left;
   padding-top: 5px;
-  padding-left: 8px;
+  padding-left: 6px;
+  padding-right: 6px;
   padding-bottom: 5px;
 }
 
@@ -171,6 +230,22 @@ div {
   overflow: hidden;
 }
 
+a.nojs:link {
+  color: inherit;
+  text-decoration: none;
+}
+
+#rightcolumn {
+  text-align: left;
+  position: relative;
+  padding: 0px;
+  float: right;
+  background: white;
+  width: 240px;
+  height: 100%;
+  margin-left: 10px;
+}
+
 #peoplebox {
   padding: 5px;
   margin-bottom: 30px;
@@ -178,6 +253,14 @@ div {
   -moz-border-radius: 0 0 10px 10px;
   -webkit-border-radius: 0 0 10px 10px;
 }
+
+#peoples {
+  background-color: white;
+  min-height: 150px;
+  width: 100%;
+  overflow: hidden;
+}
+
 </style>
 <script type="text/javascript" src="http://connect.facebook.net/ja_JP/all.js"></script>
 <script type="text/javascript" src="js/jquery-1.5.2.min.js"></script>
@@ -287,15 +370,36 @@ function pushmessage() {
             <div id ="serverstatus">Loading..</div>
           </div>
         </div><!-- end form-->
-        <div id="updates">
-          
+        <div id="updates">        
+          <div class="update" id="11">
+            <div class="upic">
+              <a class="nojs" href="/details/4dbfa468bbddbd01be0380bf/11">
+              <img class="userimg" src="/userimg/100/4da6fc5778f2f26d0b013a72/15cf047b" width="50" height="50">
+              </a>
+            </div><!-- end upic -->
+            <div class="ucontent">
+              <div class="utitle">
+                <noscript>&lt;a href="/details/4dbfa468bbddbd01be0380bf/11"&gt;</noscript>
+                <div class="uname">
+                  <a class="nojs" href="/details/4dbfa468bbddbd01be0380bf/11">So</a>
+                </div><!-- end uname -->
+                <div class="uinfo">
+                  <span class="pin"></span>
+                  <span class="utime" ct="1304492441">6 hr</span>
+                </div><!-- end uinfo -->
+              </div> <!-- end utitle -->
+              <div class="ustatus">
+                <span class="utext">hogehoge</span>
+              </div><!-- end ustatus -->
+            </div><!-- end ucontent -->
+          </div><!-- end update-->
         </div><!-- end updates-->
       </div><!-- end chatbox-->
     </div><!-- end leftcolmun-->
     <div id="rightcolumn">
-      <div class="boxtitle"><img height="32" src="./images/peoples.png" id="peoples"><span>peoples</span></div>    
+      <div class="boxtitle"><img height="32" src="./images/peoples.png" id="people"><span>peoples</span></div>    
       <div id="peoplebox">
-        <div id="updates">
+        <div id="peoples">
           
         </div><!-- end updates-->
       </div><!-- end chatbox-->
