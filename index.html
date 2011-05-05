@@ -266,69 +266,102 @@ a.nojs:link {
 <script type="text/javascript" src="js/jquery-1.5.2.min.js"></script>
 <script type="text/javascript"><!--
 
+//セッションID
+var sessionId;
+
+//ユーザネーム
+var username;
+
 var socket = new io.Socket(null, {port: 8080});
 socket.connect();
 
-//ページロード完了後の処理
+// ページロード完了後の処理
 $(function(){
-
-    //サーバ接続
+    // ソケットサーバ接続
     socket.on('connect', function(message){
-      $("#serverstatus").css('background','#A2CD5A').html('<span>Server Connected.</span>');
+      
     });
-
-    //サーバ切断
+    // ソケットサーバ切断
     socket.on('disconnect', function(message){
-      $("#serverstatus").css('background','#FF6A6A').html('<span>Server Disconnected.</span>');
+      $('#serverstatus').css('background','#FF6A6A').html('<span>Server Disconnected.(※リロードして下さい)</span>');
     });
-
-  //facebookへのログイン&認証&セッション情報の取得
+  // facebookへのログイン&認証&セッション情報の取得
   fblogin();
 });
 
-
-//facebookへのログイン&認証&セッション情報の取得
+// facebookへのログイン&認証&セッション情報の取得
 function fblogin() {
-  FB.getLoginStatus(function(response) {  //ログインステータスの取得
-    if (response.session) {  //セッションが取れた時
-
-    //データ受信ハンドラ
-    socket.on('message', function(message){
-      sendmessage = message.split(",")
-      $("#updates").prepend(sendmessage[0] + " " + sendmessage[1] + " " + sendmessage[2] + '<br>');
-    });
-  
-    //ユーザIDの取得
-	FB.api ('/me', function(response) {
-      socket.send(response.id + "," + response.name + "," + "が入室しました。");
-    });
-      
+  // ログインステータスの取得
+  FB.getLoginStatus(function(response) {  
+    if (response.session) {  // セッションが取れた時
+      // ソケットサーバにアクセストークンを送信
+      socket.send('connection' + ';' + response.session.access_token + ';');      
     } else {
-      //セッションが取れない時は認証画面に飛ばす
-      parent.location.href = "https://www.facebook.com/dialog/oauth?client_id=150894444976816&redirect_uri=http://fb.kurimon.com/cavad/&scope=user_about_me,read_stream,publish_stream";
-    }  //-End- ログインステータスの取得
+      // セッションが取れない時はFBの認証ページへリダイレクトする
+      var url = 'https://www.facebook.com/dialog/oauth';
+      url += '?client_id=' + '150894444976816'; // アプリケーションID
+      url += '&redirect_uri=http://kurimon.com/cavad/'; // 認証後に帰ってくるURL
+      url += '&display=page'; // 認証画面をページ出すかポップアップで出すか
+      url += '&scope=' + 'user_about_me,read_stream,publish_stream'; // 必要な権限
+      parent.location.href = url;
+    }
   });
-}  //-End- facebookへのログイン&認証&セッション情報の取得//-->
+}
 
-function textboxenter(code){
+//データ受信ハンドラ
+socket.on('message', function(message){
+  sendmessage = message.split(';');
+  if(sendmessage[0]){
+    switch (sendmessage[0]){
+      //ソケットサーバからの接続OKメッセージ
+      case 'connectionok':
+        //ソケットサーバから渡されたセッションIDを格納
+        sessionId = sendmessage[1];
+        //ソケットサーバから渡されたユーザネームを格納
+        username = sendmessage[2];
+        $('#serverstatus').css('background','#A2CD5A').html('<span>Server Connected.(id:' + username + ')</span>');
+        break;
+      case 'userconnect':
+        $("#updates").prepend('<div class="update"><div class="upic"><a class="nojs" href="http://www.facebook.com/' + sendmessage[2] + '"><img class="userimg" src="https://graph.facebook.com/' + sendmessage[2] + '/picture" width="50" height="50"></a></div><!-- end upic --><div class="ucontent"><div class="utitle"><div class="uname"><a class="nojs" href="http://www.facebook.com/' + sendmessage[2] + '">' + sendmessage[2] + '</a></div><!-- end uname --><div class="uinfo"><span class="pin"></span><span class="utime" ct="1304492441">' + sendmessage[4] + '</span></div><!-- end uinfo --></div> <!-- end utitle --><div class="ustatus"><span class="utext">' + sendmessage[3] + '</span></div><!-- end ustatus --></div><!-- end ucontent --></div><!-- end update-->');
+        break;
+      case 'userdisconnect':
+        $("#updates").prepend('<div class="update"><div class="upic"><a class="nojs" href="http://www.facebook.com/' + sendmessage[2] + '"><img class="userimg" src="https://graph.facebook.com/' + sendmessage[2] + '/picture" width="50" height="50"></a></div><!-- end upic --><div class="ucontent"><div class="utitle"><div class="uname"><a class="nojs" href="http://www.facebook.com/' + sendmessage[2] + '">' + sendmessage[2] + '</a></div><!-- end uname --><div class="uinfo"><span class="pin"></span><span class="utime" ct="1304492441">' + sendmessage[4] + '</span></div><!-- end uinfo --></div> <!-- end utitle --><div class="ustatus"><span class="utext">' + sendmessage[3] + '</span></div><!-- end ustatus --></div><!-- end ucontent --></div><!-- end update-->');
+        break;
+      case 'userlist':
+        $("#peoples").html(sendmessage[5]);
+        break;
+      case 'sendmessage':
+        $("#updates").prepend('<div class="update"><div class="upic"><a class="nojs" href="http://www.facebook.com/' + sendmessage[2] + '"><img class="userimg" src="https://graph.facebook.com/' + sendmessage[2] + '/picture" width="50" height="50"></a></div><!-- end upic --><div class="ucontent"><div class="utitle"><div class="uname"><a class="nojs" href="http://www.facebook.com/' + sendmessage[2] + '">' + sendmessage[2] + '</a></div><!-- end uname --><div class="uinfo"><span class="pin"></span><span class="utime" ct="1304492441">' + sendmessage[4] + '</span></div><!-- end uinfo --></div> <!-- end utitle --><div class="ustatus"><span class="utext">' + sendmessage[3] + '</span></div><!-- end ustatus --></div><!-- end ucontent --></div><!-- end update-->');
+        break;
+      default:
+        break;
+    }
+  }else{
+  }
+  //$("#updates").prepend(sendmessage[0] + " " + sendmessage[1] + " " + sendmessage[2] + '<br>');
+});
+
+//inputboxでEnterが押された時、ソケットサーバにメッセージをpushする処理
+function inputboxenter(code){
   //エンターキー押下なら
   if(13 == code){
+    //ソケットサーバにメッセージをpush
     pushmessage();
   }
 }
 
+//ソケットサーバにメッセージをpushする処理
 function pushmessage() {
-
+  //inputboxが空なら
   if($('#pushtext').val() == ""){
-  
+  //何もしない
   }else{
+  //変数にinputboxの値を格納
   pushtext = $('#pushtext').val();
+  //inputboxの内容を消去
   $('#pushtext').val("");
     //サーバーにメッセージをpush
-    FB.api ('/me', function(response) {
-      socket.send(response.id + "," + response.name + "," + pushtext);
-      
-    });
+    socket.send('sendmessage;' + sessionId + ";;" + pushtext);      
   }
 }
 
@@ -363,36 +396,15 @@ function pushmessage() {
       <div id="chatbox">
         <div id="form">
           <div id="textwrapper">
-            <input id="pushtext" name="text" onkeypress="textboxenter(event.keyCode);" style="resize: none;"></input>
+            <input id="pushtext" name="text" onkeypress="inputboxenter(event.keyCode);" style="resize: none;"></input>
           </div>
           <div id="buttonwrapper">
             <input type="button" id="pushbutton" value="push" onclick="pushmessage();">
             <div id ="serverstatus">Loading..</div>
           </div>
         </div><!-- end form-->
-        <div id="updates">        
-          <div class="update" id="11">
-            <div class="upic">
-              <a class="nojs" href="/details/4dbfa468bbddbd01be0380bf/11">
-              <img class="userimg" src="/userimg/100/4da6fc5778f2f26d0b013a72/15cf047b" width="50" height="50">
-              </a>
-            </div><!-- end upic -->
-            <div class="ucontent">
-              <div class="utitle">
-                <noscript>&lt;a href="/details/4dbfa468bbddbd01be0380bf/11"&gt;</noscript>
-                <div class="uname">
-                  <a class="nojs" href="/details/4dbfa468bbddbd01be0380bf/11">So</a>
-                </div><!-- end uname -->
-                <div class="uinfo">
-                  <span class="pin"></span>
-                  <span class="utime" ct="1304492441">6 hr</span>
-                </div><!-- end uinfo -->
-              </div> <!-- end utitle -->
-              <div class="ustatus">
-                <span class="utext">hogehoge</span>
-              </div><!-- end ustatus -->
-            </div><!-- end ucontent -->
-          </div><!-- end update-->
+        <div id="updates">
+            
         </div><!-- end updates-->
       </div><!-- end chatbox-->
     </div><!-- end leftcolmun-->
