@@ -65,8 +65,8 @@ socket.on('connection', function(client){
 
   //クライアント切断時のハンドラ
   client.on('disconnect', function(){
-    client.broadcast('userdisconnect;' + client.sessionId + ';' + username_and_sessionid[client.sessionId] + '; が切断しました。;' + getCurrentTime());
-    sys.puts('userdisconnect;' + client.sessionId + ';' + username_and_sessionid[client.sessionId] + '; が切断しました。;' + getCurrentTime());
+    client.broadcast('userdisconnect;' + client.sessionId + ';' + username_and_sessionid[client.sessionId] + '; <strong>が切断しました。</strong>;' + getCurrentTime());
+    sys.puts('userdisconnect;' + client.sessionId + ';' + username_and_sessionid[client.sessionId] + '; <strong>が切断しました。</strong>;' + getCurrentTime());
     delete username_and_sessionid[client.sessionId];
     sendUserlist();
   })
@@ -101,4 +101,5 @@ function padZero(num) {
 	}
 	return result;
 }
+
 
