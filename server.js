@@ -56,6 +56,7 @@ socket.on('connection', function(client) {
       if (name) {
         //ユーザ名とセッションIDを連想配列に格納
 <<<<<<< HEAD
+<<<<<<< HEAD
         username_and_sessionid[client.sessionId] = JsonObject.username;
         
         //接続したクライアントにセッションIDとユーザーネームを送信
@@ -70,6 +71,11 @@ socket.on('connection', function(client) {
         for (var i = 0;i < chatlogs.length; i ++){
           client.send(chatlogs[chatlogs.length - i]);
         }
+=======
+        username_and_sessionid[client.sessionId] = name + '\t' + JsonObject.id;
+        //クライアントにセッションIDとユーザーネームを送信
+        client.send('connectionok;' + client.sessionId + ';' + name + ';' + JsonObject.id);
+>>>>>>> 0ce0926c996ebd5fbaf79753ae32787473b53eb2
 
         //すべてのクライアントに接続したユーザーと接続メッセージを送信
         client.send('userconnect;' + client.sessionId + ';' + name + '; が接続しました。;' + getCurrentTime());
