@@ -18,11 +18,9 @@ socket.on('connection', function(client) {
   //クライアント側からmessage受信ハンドラ
   client.on('message', function(message) {
     if (message) {
-
       //XSS対策
       message = message.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
       sendmessage = message.split(";");
-      
       //受信データの種類によって処理を振り分ける
       switch (sendmessage[0]) {
         //クライアントからの接続要求
@@ -44,16 +42,16 @@ socket.on('connection', function(client) {
     if (this.readyState == 4) {
       var JsonObject = JSON.parse(this.responseText);
       //渡されたアクセストークンでユーザ名を取得できた場合
-      if (JsonObject.username) {
+      var name = JsonObject.username || JsonObject.name;
+      if (name) {
         //ユーザ名とセッションIDを連想配列に格納
-        username_and_sessionid[client.sessionId] = JsonObject.username;
-        
+        username_and_sessionid[client.sessionId] = name + '\t' + JsonObject.id;
         //クライアントにセッションIDとユーザーネームを送信
-        client.send('connectionok;' + client.sessionId + ';' + JsonObject.username);
+        client.send('connectionok;' + client.sessionId + ';' + name + ';' + JsonObject.id);
 
         //すべてのクライアントに接続したユーザーと接続メッセージを送信
-        client.send('userconnect;' + client.sessionId + ';' + JsonObject.username + '; が接続しました。;' + getCurrentTime());
-        client.broadcast('userconnect;' + client.sessionId + ';' + JsonObject.username + '; が接続しました。;' + getCurrentTime());
+        client.send('userconnect;' + client.sessionId + ';' + name + '; が接続しました。;' + getCurrentTime());
+        client.broadcast('userconnect;' + client.sessionId + ';' + name + '; が接続しました。;' + getCurrentTime());
         
         sendUserlist();
       }
@@ -71,8 +69,9 @@ socket.on('connection', function(client) {
   //接続中のユーザ一覧をクライアントに送信
   function sendUserlist() {
     var userlist = '';
-    for(var i in username_and_sessionid){
-      userlist += '<div><a class="nojs" href="http://www.facebook.com/' + username_and_sessionid[i] + '"><img src="https://graph.facebook.com/' + username_and_sessionid[i] + '/picture" width="20" height="20">' + username_and_sessionid[i] + '</a></div>';
+    for (var i in username_and_sessionid) {
+      var uid = username_and_sessionid[i].split('\t');
+      userlist += '<div><a class="nojs" href="http://www.facebook.com/' + uid[1] + '"><img src="https://graph.facebook.com/' + uid[1] + '/picture" width="20" height="20">' + uid[0] + '</a></div>';
     }
     client.send('userlist;;;;' + getCurrentTime() + ';' + userlist);
     client.broadcast('userlist;;;;' + getCurrentTime() + ';' + userlist);
