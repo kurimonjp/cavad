@@ -61,11 +61,8 @@ socket.on('connection', function(client) {
   };
 
   //クライアント切断時のハンドラ
-<<<<<<< HEAD
-  client.on('disconnect', function(){
-=======
+
   client.on('disconnect', function() {
->>>>>>> 198bfb7b2effc4a5f4de0746e4a39822709627bd
     client.broadcast('userdisconnect;' + client.sessionId + ';' + username_and_sessionid[client.sessionId] + '; <strong>が切断しました。</strong>;' + getCurrentTime());
     sys.puts('userdisconnect;' + client.sessionId + ';' + username_and_sessionid[client.sessionId] + '; <strong>が切断しました。</strong>;' + getCurrentTime());
     delete username_and_sessionid[client.sessionId];
@@ -102,8 +99,4 @@ function padZero(num) {
   }
   return result;
 }
-<<<<<<< HEAD
 
-
-=======
->>>>>>> 198bfb7b2effc4a5f4de0746e4a39822709627bd
