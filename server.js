@@ -12,7 +12,9 @@ var sys = require('util');
 var XMLHttpRequest = require("./XMLHttpRequest").XMLHttpRequest;
 var xhr = new XMLHttpRequest();
 
-var username_and_sessionid = new Array();
+var username_and_sessionid = [];
+
+var chatlogs = [];
 
 socket.on('connection', function(client) {
   //クライアント側からmessage受信ハンドラ
@@ -31,9 +33,17 @@ socket.on('connection', function(client) {
           xhr.open('GET', 'https://graph.facebook.com/me?access_token=' + sendmessage[1]);
           xhr.send();
           break;
+        //すべてのクライアントに受信したメッセージを送信
         case 'sendmessage':
+          //チャットログを保存
+          chatlogs.unshift('sendmessage;;' + username_and_sessionid[sendmessage[1]] + ';' + sendmessage[3] + ';' + getCurrentTime());
+          if (chatlogs.length > 20) {
+            chatlogs.pop();
+          }
           client.send('sendmessage;;' + username_and_sessionid[sendmessage[1]] + ';' + sendmessage[3] + ';' + getCurrentTime());
           client.broadcast('sendmessage;;' + username_and_sessionid[sendmessage[1]] + ';' + sendmessage[3] + ';' + getCurrentTime());
+          //デバック用
+          sys.puts(chatlogs.length);
         default:
           break;
       }
@@ -48,8 +58,13 @@ socket.on('connection', function(client) {
         //ユーザ名とセッションIDを連想配列に格納
         username_and_sessionid[client.sessionId] = JsonObject.username;
         
-        //クライアントにセッションIDとユーザーネームを送信
+        //接続したクライアントにセッションIDとユーザーネームを送信
         client.send('connectionok;' + client.sessionId + ';' + JsonObject.username);
+
+        //接続したクライアントに最近の過去ログを送信
+        for (var i = 0;i < chatlogs.length; i ++){
+          client.send(chatlogs[chatlogs.length - i]);
+        }
 
         //すべてのクライアントに接続したユーザーと接続メッセージを送信
         client.send('userconnect;' + client.sessionId + ';' + JsonObject.username + '; が接続しました。;' + getCurrentTime());
@@ -61,10 +76,12 @@ socket.on('connection', function(client) {
   };
 
   //クライアント切断時のハンドラ
-
   client.on('disconnect', function() {
-    client.broadcast('userdisconnect;' + client.sessionId + ';' + username_and_sessionid[client.sessionId] + '; <strong>が切断しました。</strong>;' + getCurrentTime());
-    sys.puts('userdisconnect;' + client.sessionId + ';' + username_and_sessionid[client.sessionId] + '; <strong>が切断しました。</strong>;' + getCurrentTime());
+    //ユーザネームが取得できた時だけ切断メッセージをブロードキャストする
+    if( username_and_sessionid[client.sessionId] != undefined ) {
+      client.broadcast('userdisconnect;' + client.sessionId + ';' + username_and_sessionid[client.sessionId] + '; <strong>が切断しました。</strong>;' + getCurrentTime());
+      sys.puts('userdisconnect;' + client.sessionId + ';' + username_and_sessionid[client.sessionId] + '; <strong>が切断しました。</strong>;' + getCurrentTime());
+    }
     delete username_and_sessionid[client.sessionId];
     sendUserlist();
   });
