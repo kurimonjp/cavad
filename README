@@ -1,0 +1,11 @@
+・サーバーサイド(node)
+
+  XMLHttpRequest.js
+  server.js
+
+・クライアントサイド(apache)
+
+  index.html
+  js/
+  images/
+  css/
