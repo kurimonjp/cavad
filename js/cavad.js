@@ -12,6 +12,9 @@
   //ユーザネーム
   Cavad.username;
 
+  //ユーザID
+  Cavad.id;
+
   Cavad.socket = new io.Socket(null, {port: 8080});
   Cavad.socket.connect();
 
@@ -62,6 +65,7 @@
           Cavad.sessionId = sendmessage[1];
           //ソケットサーバから渡されたユーザネームを格納
           Cavad.username = sendmessage[2];
+          Cavad.id = sendmessage[3];
           var html = [];
           html.push('<span>Server Connected.(id:');
           html.push(Cavad.username);
@@ -71,6 +75,7 @@
         case 'userconnect':
         case 'userdisconnect':
         case 'sendmessage':
+          console.log(sendmessage);
           $('#updates').prepend(makeHTML(sendmessage[2], sendmessage[3], sendmessage[4]));
           break;
         case 'userlist':
@@ -88,14 +93,14 @@
     var html = [];
     html.push('<div class="update">');
     html.push('<div class="upic">');
-    html.push('<a class="nojs" href="http://www.facebook.com/' + id + '">');
-    html.push('<img class="userimg" src="https://graph.facebook.com/' + id + '/picture" width="50" height="50">');
+    html.push('<a class="nojs" href="http://www.facebook.com/profile.php?id=' + Cavad.id + '">');
+    html.push('<img class="userimg" src="https://graph.facebook.com/' + Cavad.id + '/picture" width="50" height="50">');
     html.push('</a>');
     html.push('</div><!-- end upic -->');
     html.push('<div class="ucontent">');
     html.push('<div class="utitle">');
     html.push('<div class="uname">');
-    html.push('<a class="nojs" href="http://www.facebook.com/' + id + '">' + id + '</a>');
+    html.push('<a class="nojs" href="http://www.facebook.com/profile.php?id=' + Cavad.id + '">' + id + '</a>');
     html.push('</div><!-- end uname -->');
     html.push('<div class="uinfo">');
     html.push('<span class="pin"></span>');
