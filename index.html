@@ -12,23 +12,10 @@
 <meta property="og:description"
           content="「node.js」を使ったSNS連携リアルタイムチャット"/>
 <link rel="stylesheet" type="text/css" href="css/main.css"/>
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
-<script type="text/javascript" src="http://cdn.socket.io/stable/socket.io.js"></script>
 <title>cavad</title>
-<script type="text/javascript" src="http://connect.facebook.net/ja_JP/all.js"></script>
-<script type="text/javascript" src="js/jquery-1.5.2.min.js"></script>
-<script type="text/javascript" src="js/cavad.js"></script>
 </head>
 <body>
 <div id="fb-root"></div>
-<script>
-  FB.init({  //Javascript SDKの初期化
-     appId  : '150894444976816',
-     status : true, // check login status
-     cookie : true, // enable cookies to allow the server to access the session
-     xfbml  : true  // parse XFBML
-  });
-</script>
 <div id="topline"></div>
 <div id="banner"> 
   <div class="contentwrap"> 
@@ -70,7 +57,18 @@
     </div><!-- end rightcolumn-->
   </div><!-- end contentwrap-->
 </div><!-- end maincontents-->
-
-
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
+<script type="text/javascript" src="http://cdn.socket.io/stable/socket.io.js"></script>
+<script type="text/javascript" src="http://connect.facebook.net/ja_JP/all.js"></script>
+<script type="text/javascript" src="js/jquery-1.5.2.min.js"></script>
+<script type="text/javascript" src="js/cavad.js"></script>
+<script type="text/javascript">
+  FB.init({  //Javascript SDKの初期化
+     appId  : '150894444976816',
+     status : true, // check login status
+     cookie : true, // enable cookies to allow the server to access the session
+     xfbml  : true  // parse XFBML
+  });
+</script>
 </body>
 </html>
