@@ -36,10 +36,6 @@
     // ログインステータスの取得
     FB.getLoginStatus(function(response) {  
       if (response.session) {  // セッションが取れた時
-        
-        //デバッグ用
-        //$('#debug').html('debug:' + response.session.access_token);
-      
         // ソケットサーバにアクセストークンを送信
         Cavad.socket.send('connection' + ';' + response.session.access_token + ';');      
       } else {
