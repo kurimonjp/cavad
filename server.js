@@ -1,5 +1,5 @@
 var http = require('http'),
-    io = require('socket.io'), 
+    io = require('socket.io');
 server = http.createServer(function(req, res){
     res.writeHead(200, {'Content-Type': 'text/html'});
     res.write('<h1>サンプルサーバ</h1>');
@@ -14,17 +14,17 @@ var xhr = new XMLHttpRequest();
 
 var username_and_sessionid = new Array();
 
-socket.on('connection', function(client){
+socket.on('connection', function(client) {
   //クライアント側からmessage受信ハンドラ
   client.on('message', function(message) {
-    if(message){
+    if (message) {
 
       //XSS対策
       message = message.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
       sendmessage = message.split(";");
       
       //受信データの種類によって処理を振り分ける
-      switch (sendmessage[0]){
+      switch (sendmessage[0]) {
         //クライアントからの接続要求
         case 'connection':
           //認証(渡されたアクセストークンでユーザ名を取得できるかどうか)
@@ -37,8 +37,6 @@ socket.on('connection', function(client){
         default:
           break;
       }
-        
-
     }
   });
 
@@ -63,7 +61,11 @@ socket.on('connection', function(client){
   };
 
   //クライアント切断時のハンドラ
+<<<<<<< HEAD
   client.on('disconnect', function(){
+=======
+  client.on('disconnect', function() {
+>>>>>>> 198bfb7b2effc4a5f4de0746e4a39822709627bd
     client.broadcast('userdisconnect;' + client.sessionId + ';' + username_and_sessionid[client.sessionId] + '; <strong>が切断しました。</strong>;' + getCurrentTime());
     sys.puts('userdisconnect;' + client.sessionId + ';' + username_and_sessionid[client.sessionId] + '; <strong>が切断しました。</strong>;' + getCurrentTime());
     delete username_and_sessionid[client.sessionId];
@@ -71,7 +73,7 @@ socket.on('connection', function(client){
   });
 
   //接続中のユーザ一覧をクライアントに送信
-  function sendUserlist(){
+  function sendUserlist() {
     var userlist = '';
     for(var i in username_and_sessionid){
       userlist += '<div><a class="nojs" href="http://www.facebook.com/' + username_and_sessionid[i] + '"><img src="https://graph.facebook.com/' + username_and_sessionid[i] + '/picture" width="20" height="20">' + username_and_sessionid[i] + '</a></div>';
@@ -83,22 +85,25 @@ socket.on('connection', function(client){
 
 //現在時刻取得（yyyy/mm/dd hh:mm:ss）
 function getCurrentTime() {
-	var now = new Date();
-	var res = "" + now.getFullYear() + "/" + padZero(now.getMonth() + 1) + 
-		"/" + padZero(now.getDate()) + " " + padZero(now.getHours()) + ":" + 
-		padZero(now.getMinutes()) + ":" + padZero(now.getSeconds());
-	return res;
+  var now = new Date();
+  var res = "" + now.getFullYear() + "/" + padZero(now.getMonth() + 1) + 
+            "/" + padZero(now.getDate()) + " " + padZero(now.getHours()) + ":" + 
+            padZero(now.getMinutes()) + ":" + padZero(now.getSeconds());
+  return res;
 }
 
 //先頭ゼロ付加
 function padZero(num) {
-	var result;
-	if (num < 10) {
-		result = "0" + num;
-	} else {
-		result = "" + num;
-	}
-	return result;
+  var result;
+  if (num < 10) {
+    result = "0" + num;
+  } else {
+    result = "" + num;
+  }
+  return result;
 }
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> 198bfb7b2effc4a5f4de0746e4a39822709627bd

@@ -11,9 +11,9 @@
 <meta property="fb:admins" content="kurichang"/>
 <meta property="og:description"
           content="「node.js」を使ったSNS連携リアルタイムチャット"/>
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
-<script type="text/javascript" src="http://cdn.socket.io/stable/socket.io.js"></script>
+<link rel="stylesheet" type="text/css" href="css/main.css"/>
 <title>cavad</title>
+<<<<<<< HEAD
 <style type="text/css">
 html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, font, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td {
   margin: 0;
@@ -366,17 +366,11 @@ function pushmessage() {
 }
 
 </script>
+=======
+>>>>>>> 198bfb7b2effc4a5f4de0746e4a39822709627bd
 </head>
 <body>
 <div id="fb-root"></div>
-<script>
-  FB.init({  //Javascript SDKの初期化
-     appId  : '150894444976816',
-     status : true, // check login status
-     cookie : true, // enable cookies to allow the server to access the session
-     xfbml  : true  // parse XFBML
-  });
-</script>
 <div id="topline"></div>
 <div id="banner"> 
   <div class="contentwrap"> 
@@ -396,10 +390,14 @@ function pushmessage() {
       <div id="chatbox">
         <div id="form">
           <div id="textwrapper">
+<<<<<<< HEAD
             <input id="pushtext" name="text" onkeypress="inputboxenter(event.keyCode);" style="resize: none;"></input>
+=======
+            <input id="pushtext" name="text" onkeypress="Cavad.inputboxenter(event.keyCode);" style="resize: none;"></input>
+>>>>>>> 198bfb7b2effc4a5f4de0746e4a39822709627bd
           </div>
           <div id="buttonwrapper">
-            <input type="button" id="pushbutton" value="push" onclick="pushmessage();">
+            <input type="button" id="pushbutton" value="push" onclick="Cavad.pushmessage();">
             <div id ="serverstatus">Loading..</div>
           </div>
         </div><!-- end form-->
@@ -418,7 +416,18 @@ function pushmessage() {
     </div><!-- end rightcolumn-->
   </div><!-- end contentwrap-->
 </div><!-- end maincontents-->
-
-
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
+<script type="text/javascript" src="http://cdn.socket.io/stable/socket.io.js"></script>
+<script type="text/javascript" src="http://connect.facebook.net/ja_JP/all.js"></script>
+<script type="text/javascript" src="js/jquery-1.5.2.min.js"></script>
+<script type="text/javascript" src="js/cavad.js"></script>
+<script type="text/javascript">
+  FB.init({  //Javascript SDKの初期化
+     appId  : '150894444976816',
+     status : true, // check login status
+     cookie : true, // enable cookies to allow the server to access the session
+     xfbml  : true  // parse XFBML
+  });
+</script>
 </body>
 </html>
