@@ -1,0 +1,75 @@
+
+<!doctype html> 
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:og="http://ogp.me/ns#"
+      xmlns:fb="http://www.facebook.com/2008/fbml"> 
+<head> 
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"> 
+<meta http-equiv="Content-Style-Type" content="text/css"> 
+<meta property="og:title" content="cavad"/> 
+<meta property="og:image" content="http://fb.kurimon.com/cavad/images/cavad_facebooklogo.png"/> 
+<meta property="og:site_name" content="cavad"/> 
+<meta property="fb:admins" content="kurichang"/> 
+<meta property="og:description"
+          content="「node.js」を使ったSNS連携リアルタイムチャット"/> 
+<link rel="stylesheet" type="text/css" href="css/main.css"/> 
+<title>cavad</title> 
+</head> 
+<body> 
+<div id="fb-root"></div> 
+<div id="topline"></div> 
+<div id="banner"> 
+  <div class="contentwrap"> 
+    <a href="./"><img height="50" src="./images/cavad.png" id="bannerlogo"></a> 
+  </div> 
+</div><!-- end bunner--> 
+ 
+<div id="debug"> 
+  <div class="contentwrap"> 
+  </div> 
+</div><!-- end debug--> 
+ 
+<div id="maincontents"> 
+  <div class="contentwrap"> 
+    <div id="leftcolumn"> 
+      <div class="boxtitle"><img height="32" src="./images/ch.png" id="chname"><span>Public CH.</span></div> 
+      <div id="chatbox"> 
+        <div id="form"> 
+          <div id="textwrapper"> 
+            <input id="pushtext" name="text" onkeypress="Cavad.inputboxenter(event.keyCode);" style="resize: none;"></input> 
+          </div> 
+          <div id="buttonwrapper"> 
+            <input type="button" id="pushbutton" value="push" onclick="Cavad.pushmessage();"> 
+            <div id ="serverstatus">Loading..</div> 
+          </div> 
+        </div><!-- end form--> 
+        <div id="updates"> 
+            
+        </div><!-- end updates--> 
+      </div><!-- end chatbox--> 
+    </div><!-- end leftcolmun--> 
+    <div id="rightcolumn"> 
+      <div class="boxtitle"><img height="32" src="./images/peoples.png" id="people"><span>peoples</span></div>    
+      <div id="peoplebox"> 
+        <div id="peoples"> 
+          
+        </div><!-- end updates--> 
+      </div><!-- end chatbox--> 
+    </div><!-- end rightcolumn--> 
+  </div><!-- end contentwrap--> 
+</div><!-- end maincontents--> 
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script> 
+<script type="text/javascript" src="http://cdn.socket.io/stable/socket.io.js"></script> 
+<script type="text/javascript" src="http://connect.facebook.net/en_US/all.js"></script> 
+<script type="text/javascript" src="js/jquery-1.5.2.min.js"></script> 
+<script type="text/javascript" src="js/cavad.js"></script> 
+<script type="text/javascript"> 
+  FB.init({  //Javascript SDKの初期化
+     appId  : '150894444976816',
+     status : true, // check login status
+     cookie : true, // enable cookies to allow the server to access the session
+     xfbml  : true  // parse XFBML
+  });
+</script> 
+</body> 
+</html>
