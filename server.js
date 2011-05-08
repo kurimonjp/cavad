@@ -65,6 +65,7 @@
             break;
             //クライアントからのチャットメッセージ
             case 'send_message':
+            //XSS対策
             Cavad.noXssText = Cavad.jsonReceiveData.data[0].text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\"/g, '&quot;').replace(/\'/g, '&#039;');
               Cavad.jsonSendData = {'data':[{
                                      //送信するメッセージの種類
