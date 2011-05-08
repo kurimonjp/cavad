@@ -185,5 +185,5 @@
       Cavad.socket.send(JSON.stringify(Cavad.jsonSendData));
     }
   }
-// -end-
+//-end-
 })();
