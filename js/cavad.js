@@ -1,7 +1,6 @@
 (function() {
   if (typeof(Cavad) === 'undefined') {
     Cavad = {
-      fblogin:fblogin,
       inputboxenter:inputboxenter,
       pushmessage:pushmessage
     };
@@ -101,7 +100,7 @@
     html.push('</div><!-- end uinfo -->');
     html.push('</div><!-- end utitle -->');
     html.push('<div class="ustatus">');
-    html.push('<span class="utext">' + text + '</span>');
+    html.push('<span class="utext">' + makeLink(text) + '</span>');
     html.push('</div><!-- end ustatus -->');
     html.push('</div><!-- end ucontent -->');
     html.push('</div><!-- end update-->');
@@ -130,5 +129,14 @@
       //サーバーにメッセージをpush
       Cavad.socket.send('sendmessage;' + Cavad.sessionId + ";;" + pushtext);
     }
+  }
+
+  function makeLink(text) {
+    var result = text.replace(/(https?:\/\/(?:[^!"#$%&'\(\)*\+,-\.\/:;<=>\?@\[\\\]^_`\{\|\}~\s][\.-](?=[^!"#$%&'\(\)*\+,-\.\/:;<=>\?@\[\\\]^_`\{\|\}~\s])|[^!"#$%&'\(\)*\+,-\.\/:;<=>\?@\[\\\]^_`\{\|\}~\s]){1,}\.[a-z]{2,}(?::[0-9]+)?(?:\/(?:[\x21-\x7e]+)?)?)/mgi, function() {
+      if (arguments[1] !="" && typeof(arguments[1]) != 'undefined') {
+        return '<a target="_blank" href="' + arguments[1] +'">' + arguments[1] + '</a>';
+      }
+    });
+    return result;
   }
 })();
