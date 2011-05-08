@@ -65,6 +65,7 @@
             break;
             //クライアントからのチャットメッセージ
             case 'send_message':
+            Cavad.noXssText = Cavad.jsonReceiveData.data[0].text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\"/g, '&quot;').replace(/\'/g, '&#039;');
               Cavad.jsonSendData = {'data':[{
                                      //送信するメッセージの種類
                                      'action':'send_message',
@@ -73,7 +74,7 @@
                                      //ユーザID
                                      'user_id':Cavad.useridAndSessionId[client.sessionId],
                                      //メッセージ
-                                     'text':Cavad.jsonReceiveData.data[0].text,
+                                     'text':Cavad.noXssText,
                                      //時刻
                                      'date':getCurrentTime(),
                                      }]
